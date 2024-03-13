@@ -2,6 +2,7 @@ package com.ecomPulse.orderservice.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ public class RestTemplateConfig {
     private Integer readTimeout = 10000;
 
     @Bean
+    @LoadBalanced
     public RestTemplate restTemplate(){
         return restTemplateBuilder
                 .setConnectTimeout(Duration.ofMillis(connectTimeout))

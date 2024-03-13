@@ -44,17 +44,15 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponse placeOrder(OrderRequest orderRequest) {
         Order order = orderConverter.orderRequestToOrderConverter(orderRequest);
 
-        List<String> orderProductIds = orderRequest.getOrderItemsDtoList().stream().map(OrderItemsDto::getProductId).toList();
-
+        //Check ordered product quantity is available or not
         try{
-            //make separate requests
+            //make separate requests to product service
             for (OrderItemsDto orderItemsDto : orderRequest.getOrderItemsDtoList() ) {
 
                 String id = orderItemsDto.getProductId();
                 ProductResponse productResponse = restTemplateUtil.makeGetRequest(id);
 
                 //check available quantity from product response
-
                 if (productResponse != null){
                     if (productResponse.getQty() < orderItemsDto.getQuantity()){
                         String errMsg = String.format("Product id: %s and product name: %s has only %s quantity",orderItemsDto.getProductId(),productResponse.getName(),productResponse.getQty());
