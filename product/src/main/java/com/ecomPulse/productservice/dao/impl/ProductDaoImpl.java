@@ -33,7 +33,7 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public Optional<Product> findById(String id){
-        log.info(LogMsg.ProductMessages.FIND_ALL_PRODUCT);
+        log.info(LogMsg.ProductMessages.PRODUCT_BY_ID,id);
         return productRepository.findById(id);
     }
 

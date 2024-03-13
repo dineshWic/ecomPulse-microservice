@@ -3,6 +3,7 @@ package com.ecomPulse.productservice.service.impl;
 import com.ecomPulse.productservice.Util.LogMsg;
 import com.ecomPulse.productservice.converter.ProductConverter;
 import com.ecomPulse.productservice.dao.ProductDao;
+import com.ecomPulse.productservice.dto.OrderQuentity;
 import com.ecomPulse.productservice.dto.ProductRequest;
 import com.ecomPulse.productservice.dto.ProductResponse;
 import com.ecomPulse.productservice.exception.NotFoundException;
@@ -13,8 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.lang.reflect.Array;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -62,6 +63,8 @@ public class ProductServiceImpl implements ProductService {
         retrievedProduct.setDescription(productRequest.getDescription());
         retrievedProduct.setName(productRequest.getName());
         retrievedProduct.setPrice(productRequest.getPrice());
+        retrievedProduct.setQty(productRequest.getQty());
+
 
         try{
             Product updatedProduct = productDao.save(retrievedProduct);
@@ -75,6 +78,11 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    /**
+     * find by product id and return product entity
+     * @param id
+     * @return
+     */
     @Override
     public Product findById(String id){
         try{
@@ -96,6 +104,11 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    /**
+     * find by product id and returns a product response dto
+     * @param id
+     * @return
+     */
     @Override
     public ProductResponse findByProductId(String id){
 
@@ -106,6 +119,24 @@ public class ProductServiceImpl implements ProductService {
         return response;
 
 
+    }
+
+    @Override
+    public List<ProductResponse> findQuantityByProductId(List<String> ids) {
+        log.info("This is ids in impl: {} ",ids);
+        List<ProductResponse> orderQuantities =  new ArrayList<>();
+
+        for (String id: ids ) {
+            log.info("This is id in impl: {} ",id);
+            Product retrievedProduct = this.findById(id);
+            log.info("This is retrievedProduct in impl: {} ",retrievedProduct);
+            ProductResponse response = productConverter.productToProductResponseConverter(retrievedProduct);
+            log.info("This is converted retrievedProduct in impl: {} ",response);
+
+            orderQuantities.add(response);
+        }
+
+        return orderQuantities;
     }
 
 }

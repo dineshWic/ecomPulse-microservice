@@ -15,6 +15,7 @@ public class ProductConverter {
                 .name(request.getName())
                 .description(request.getDescription())
                 .price(request.getPrice())
+                .qty(request.getQty())
                 .build();
     }
 
@@ -24,6 +25,7 @@ public class ProductConverter {
                 .name(request.getName())
                 .description(request.getDescription())
                 .price(request.getPrice())
+                .qty(request.getQty())
                 .build();
     }
 

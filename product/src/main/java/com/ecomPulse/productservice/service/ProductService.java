@@ -1,5 +1,6 @@
 package com.ecomPulse.productservice.service;
 
+import com.ecomPulse.productservice.dto.OrderQuentity;
 import com.ecomPulse.productservice.dto.ProductRequest;
 import com.ecomPulse.productservice.dto.ProductResponse;
 import com.ecomPulse.productservice.model.Product;
@@ -16,4 +17,6 @@ public interface ProductService {
     Product findById(String id);
 
     ProductResponse findByProductId(String id);
+
+    List<ProductResponse> findQuantityByProductId(List<String> ids);
 }
