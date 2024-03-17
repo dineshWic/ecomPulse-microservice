@@ -1,25 +1,29 @@
 package com.ecomPulse.orderservice.model;
 
+
+import com.ecomPulse.orderservice.enums.OrderStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 import java.util.List;
 
 @Entity
-@Table(name = "t_orders")
+@Table(name = "orders")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String orderNumber;
+    private Long customerId;
+
+    @Enumerated
+    private OrderStatus orderStatus;
+    
     @OneToMany(cascade = CascadeType.ALL)
-    private List<OrderLineItems> orderLineItemsList;
+    private List<OrderItems> orderItemsList;
 }

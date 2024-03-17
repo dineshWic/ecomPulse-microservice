@@ -4,28 +4,71 @@ import com.ecomPulse.productservice.dto.ProductRequest;
 import com.ecomPulse.productservice.dto.ProductResponse;
 import com.ecomPulse.productservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/api/v1/product")
 @RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
 
+    /**
+     * Create a new product
+     * @param productRequest
+     */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createProduct(@RequestBody ProductRequest productRequest) {
-        productService.createProduct(productRequest);
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody @Validated ProductRequest productRequest) {
+        ProductResponse response =  productService.createProduct(productRequest);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<ProductResponse> getAllProducts() {
-        return productService.getAllProducts();
+    /**
+     * find all products from the database
+     * @return
+     */
+    @GetMapping(value = "/all")
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+        List<ProductResponse> response =  productService.getAllProducts();
+        return ResponseEntity.ok(response);
     }
+
+    /**
+     * get a product by id
+     * @return
+     */
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable String id) throws InterruptedException {
+        log.info("Wait started");
+        Thread.sleep(10000);
+        log.info("Wait ended");
+        ProductResponse response =  productService.findByProductId(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "/quantity")
+    public ResponseEntity<List<ProductResponse>> getProductQuantities(@RequestParam List<String> ids) {
+        log.info("This is ids: {} ",ids);
+        List<ProductResponse> response =  productService.findQuantityByProductId(ids);
+        return ResponseEntity.ok(response);
+    }
+
+
+    /**
+     * Update product by id
+     * @param productRequest
+     */
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ProductResponse> updateProduct(@RequestBody @Validated ProductRequest productRequest, @PathVariable String id ){
+        ProductResponse response =  productService.updateProduct(productRequest, id);
+        return ResponseEntity.ok(response);
+    }
+
 
 }
