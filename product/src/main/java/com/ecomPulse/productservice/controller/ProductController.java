@@ -1,6 +1,5 @@
 package com.ecomPulse.productservice.controller;
 
-import com.ecomPulse.productservice.dto.OrderQuentity;
 import com.ecomPulse.productservice.dto.ProductRequest;
 import com.ecomPulse.productservice.dto.ProductResponse;
 import com.ecomPulse.productservice.service.ProductService;
@@ -45,7 +44,10 @@ public class ProductController {
      * @return
      */
     @GetMapping(value = "/{id}")
-    public ResponseEntity<ProductResponse> getProductById(@PathVariable String id) {
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable String id) throws InterruptedException {
+        log.info("Wait started");
+        Thread.sleep(10000);
+        log.info("Wait ended");
         ProductResponse response =  productService.findByProductId(id);
         return ResponseEntity.ok(response);
     }
