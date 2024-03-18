@@ -34,8 +34,17 @@ public class OrderController {
     public CompletableFuture<OrderResponse> placeOrderFallback(@RequestBody OrderRequest orderRequest, RuntimeException runtimeException) {
         log.info("Circuit Breaker fallback method called");
         log.info("Oops! something went wrong, please try again after sometime");
-        return CompletableFuture.supplyAsync(() ->null);
+        return CompletableFuture.supplyAsync(OrderResponse::new);
 
     }
+
+//    @PostMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public OrderResponse placeOrder(@RequestBody OrderRequest orderRequest) {
+//        log.info("Request Came");
+//        return orderService.placeOrder(orderRequest);
+//
+//    }
+
 
 }

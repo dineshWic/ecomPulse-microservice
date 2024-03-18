@@ -45,9 +45,9 @@ public class ProductController {
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable String id) throws InterruptedException {
-        log.info("Wait started");
-        Thread.sleep(10000);
-        log.info("Wait ended");
+//        log.info("Wait started");
+//        Thread.sleep(10000);
+//        log.info("Wait ended");
         ProductResponse response =  productService.findByProductId(id);
         return ResponseEntity.ok(response);
     }
