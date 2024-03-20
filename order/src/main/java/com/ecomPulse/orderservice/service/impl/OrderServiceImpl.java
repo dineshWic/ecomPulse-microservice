@@ -3,7 +3,10 @@ package com.ecomPulse.orderservice.service.impl;
 import com.ecomPulse.orderservice.connector.RestTemplateUtil;
 import com.ecomPulse.orderservice.converter.OrderConverter;
 import com.ecomPulse.orderservice.dao.OrderDao;
-import com.ecomPulse.orderservice.dto.*;
+import com.ecomPulse.orderservice.dto.OrderItemsDto;
+import com.ecomPulse.orderservice.dto.OrderRequest;
+import com.ecomPulse.orderservice.dto.OrderResponse;
+import com.ecomPulse.orderservice.dto.ProductResponse;
 import com.ecomPulse.orderservice.exception.ProductQuantityNotEnoughException;
 import com.ecomPulse.orderservice.exception.RestTemplateException;
 import com.ecomPulse.orderservice.exception.ServiceException;
@@ -12,16 +15,9 @@ import com.ecomPulse.orderservice.service.OrderService;
 import com.ecomPulse.orderservice.util.LogMsg;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @Service
@@ -30,15 +26,9 @@ import java.util.Objects;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderDao orderDao;
-
-    private final RestTemplate restTemplate;
-
     private final RestTemplateUtil restTemplateUtil;
-
     private final OrderConverter orderConverter;
-
-    @Value("${app.product-service.base-url}")
-    private String productBaseUrl;
+    private final KafkaTemplate<String, OrderResponse> kafkaTemplate;
 
     @Override
     public OrderResponse placeOrder(OrderRequest orderRequest) {
@@ -72,8 +62,11 @@ public class OrderServiceImpl implements OrderService {
             }
 
             Order savedOrder =  orderDao.save(order);
-
-            return orderConverter.orderToOrderResponseConverter(savedOrder);
+            OrderResponse response = orderConverter.orderToOrderResponseConverter(savedOrder);
+            log.info("Notification is sending...");
+            kafkaTemplate.send("notificationTopic",response);
+            log.info("Notification is sent...");
+            return response;
 
         }
         catch (IllegalArgumentException e){

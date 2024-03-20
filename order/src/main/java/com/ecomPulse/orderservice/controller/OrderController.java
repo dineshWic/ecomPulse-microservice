@@ -21,30 +21,30 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    @CircuitBreaker(name = "product", fallbackMethod = "placeOrderFallback")
-    @TimeLimiter(name = "product")
-    @Retry(name = "product")
-    public CompletableFuture<OrderResponse> placeOrder(@RequestBody OrderRequest orderRequest) {
-        log.info("Request Came");
-        return CompletableFuture.supplyAsync(() -> orderService.placeOrder(orderRequest));
-
-    }
-    public CompletableFuture<OrderResponse> placeOrderFallback(@RequestBody OrderRequest orderRequest, RuntimeException runtimeException) {
-        log.info("Circuit Breaker fallback method called");
-        log.info("Oops! something went wrong, please try again after sometime");
-        return CompletableFuture.supplyAsync(OrderResponse::new);
-
-    }
-
 //    @PostMapping
 //    @ResponseStatus(HttpStatus.CREATED)
-//    public OrderResponse placeOrder(@RequestBody OrderRequest orderRequest) {
+//    @CircuitBreaker(name = "product", fallbackMethod = "placeOrderFallback")
+//    @TimeLimiter(name = "product")
+//    @Retry(name = "product")
+//    public CompletableFuture<OrderResponse> placeOrder(@RequestBody OrderRequest orderRequest) {
 //        log.info("Request Came");
-//        return orderService.placeOrder(orderRequest);
+//        return CompletableFuture.supplyAsync(() -> orderService.placeOrder(orderRequest));
 //
 //    }
+//    public CompletableFuture<OrderResponse> placeOrderFallback(@RequestBody OrderRequest orderRequest, RuntimeException runtimeException) {
+//        log.info("Circuit Breaker fallback method called");
+//        log.info("Oops! something went wrong, please try again after sometime");
+//        return CompletableFuture.supplyAsync(OrderResponse::new);
+//
+//    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderResponse placeOrder(@RequestBody OrderRequest orderRequest) {
+        log.info("Request Came");
+        return orderService.placeOrder(orderRequest);
+
+    }
 
 
 }
